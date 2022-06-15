@@ -1,6 +1,6 @@
 # python-serial-data-visualizer
 
-Note: Honestly, despite sleek gui design, the app performance is signaficantly worser. Designing is much better with basic python tkinter items.
+Note: Honestly, despite sleek gui design, the app performance with Sun-Valley-ttk-theme design is signaficantly worser. Designing is much better with basic python tkinter items.
 
 ## Dark Theme
 
