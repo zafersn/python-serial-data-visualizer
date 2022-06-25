@@ -26,7 +26,8 @@ class App(DefinationsEveryting, ttk.Frame):
         self.var_0 = tk.BooleanVar()
         self.var_1 = tk.BooleanVar(value=True)
         self.var_2 = tk.BooleanVar()
-        self.var_3 = tk.IntVar(value=2)
+        DefinationsEveryting.var_3 = tk.IntVar(value=3)
+        DefinationsEveryting.var_clr = tk.IntVar(value=2)
         self.var_4 = tk.StringVar(value=self.option_menu_list[1])
         self.var_5 = tk.DoubleVar(value=75.0)
         # Create widgets :)
@@ -77,13 +78,13 @@ class App(DefinationsEveryting, ttk.Frame):
             row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
         self.readonly_combo_list = ["None", "Item 1", "Item 2"]
-        self.readonly_combo = ttk.Combobox(
+        DefinationsEveryting.serialport_cmbbox = ttk.Combobox(
             self.serialport_frame, state="readonly", values=self.readonly_combo_list
         )
-        self.readonly_combo.current(0)
-        self.readonly_combo.grid(row=0, column=0, padx=5, pady=10, sticky="ew")
+        DefinationsEveryting.serialport_cmbbox.current(0)
+        DefinationsEveryting.serialport_cmbbox.grid(row=0, column=0, padx=5, pady=10, sticky="ew")
         # Button
-        self.button_refresh_port = ttk.Button(self.serialport_frame, text="Refresh")
+        self.button_refresh_port = ttk.Button(self.serialport_frame, text="Refresh", command=GUIAdapter.button_refrsh_click)
         self.button_refresh_port.grid(row=1, column=0, padx=5, pady=10, sticky="nsew")
         # ******** END OF Serial PORT ----------
 
@@ -91,7 +92,7 @@ class App(DefinationsEveryting, ttk.Frame):
 
         self.baudrate_frame = ttk.LabelFrame(self.frame_settings, text="Baud Rate", padding=(20, 10))
         self.baudrate_frame.grid(
-            row=1, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew"
+            row=1, column=0, rowspan=1, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
         self.readonly_combo_list = ["4800", "9600", "14400", "19200", "38400", "57600",
                                     "115200"]
@@ -133,10 +134,10 @@ class App(DefinationsEveryting, ttk.Frame):
 
         # ******** Connect Button ----------
 
-        DefinationsEveryting.togglebuttons = ttk.Checkbutton(
-            self.frame_settings, text="Open", style="Toggle.TButton", command=GUIAdapter.clicked_rf1
+        DefinationsEveryting.serial_c_open_buttons = ttk.Checkbutton(
+            self.frame_settings, text="Open", style="Toggle.TButton", command=GUIAdapter.clicked_serialopen
         )
-        DefinationsEveryting.togglebuttons.grid(row=4, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
+        DefinationsEveryting.serial_c_open_buttons.grid(row=4, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew")
         # ******** END OF Connect Button ----------
 
         # ******** Log File Save Location Bit ----------
@@ -146,15 +147,15 @@ class App(DefinationsEveryting, ttk.Frame):
             row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
         # Label
-        self.label_file_location = ttk.Label(
+        DefinationsEveryting.label_file_location = ttk.Label(
             self.log_file_frame,
             text="C:\\Users\TR\\PycharmProjects\\loggingTest",
             justify="center",
             font=("-size", 9, "-weight", "normal"),
         )
-        self.label_file_location.grid(row=0, column=0, pady=10, columnspan=2)
+        DefinationsEveryting.label_file_location.grid(row=0, column=0, pady=10, columnspan=2)
         # Button
-        self.button_select_location = ttk.Button(self.log_file_frame, text="Select")
+        self.button_select_location = ttk.Button(self.log_file_frame, text="Select", command=GUIAdapter.open_file)
         self.button_select_location.grid(row=1, column=0, padx=5, pady=10, sticky="nsew")
 
         # ******** END OF Log File Save Location ----------
@@ -162,97 +163,74 @@ class App(DefinationsEveryting, ttk.Frame):
 
         self.monitoring_data_frame = ttk.LabelFrame(self.frame_settings, text="Data Visualization Selector", padding=(20, 10))
         self.monitoring_data_frame.grid(
-            row=1, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew"
+            row=1, column=1, rowspan=2, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
         # Radiobuttons
-        self.radio_raw = ttk.Radiobutton(
-            self.monitoring_data_frame, text="Raw Data", variable=self.var_3, value=1
+        DefinationsEveryting.radio_raw = ttk.Radiobutton(
+            self.monitoring_data_frame, text="Raw Data", variable=DefinationsEveryting.var_3, value=3, command=GUIAdapter.radio_raw_click
         )
-        self.radio_raw.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
-        self.radio_split = ttk.Radiobutton(
-            self.monitoring_data_frame, text="Split Data", variable=self.var_3, value=2
+        DefinationsEveryting.radio_raw.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
+        DefinationsEveryting.radio_split = ttk.Radiobutton(
+            self.monitoring_data_frame, text="Split Data", variable=DefinationsEveryting.var_3, value=2, command=GUIAdapter.radio_split_click
         )
-        self.radio_split.grid(row=1, column=0, padx=5, pady=10, sticky="nsew")
+        DefinationsEveryting.radio_split.grid(row=1, column=0, padx=5, pady=10, sticky="nsew")
+        DefinationsEveryting.radio_both = ttk.Radiobutton(
+            self.monitoring_data_frame, text="Both Data", variable=DefinationsEveryting.var_3, value=1,
+            command=GUIAdapter.radio_split_click
+        )
+        DefinationsEveryting.radio_both.grid(row=3, column=0, padx=5, pady=10, sticky="nsew")
         # ******** END OF Log Monitoring Data Type Switcher ----------
+        # ******** Clear monitoring data Settings----------
 
+        self.frame_clear_screen_data = ttk.LabelFrame(self.frame_settings, text="Clear screen when serial is open ",
+                                                    padding=(20, 10))
+        self.frame_clear_screen_data.grid(
+            row=3, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew"
+        )
+        # Switch
+        DefinationsEveryting.radio_clear_receivedta = ttk.Checkbutton(
+            self.frame_clear_screen_data, text="Clear", style="Switch.TCheckbutton"
+        )
+        DefinationsEveryting.radio_clear_receivedta.grid(row=9, column=0, padx=5, pady=10, sticky="nsew")
+        # ******** END OF Clear monitoring data Settings ----------
         # **********************  END OF Serial Settings CONTENTS ************************
 
         # ********************** Monitoring CONTENTS ************************
         # Create a Frame for the serial connection settings
-        self.frame_monitoring = ttk.LabelFrame(self.tab_1, text="Monitoring", padding=(20, 10))
-        self.frame_monitoring.grid(
+        DefinationsEveryting.frame_monitoring = ttk.LabelFrame(self.tab_1, text="Monitoring", padding=(20, 10))
+        DefinationsEveryting.frame_monitoring.grid(
             row=0, column=1, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
+        DefinationsEveryting.frame_monitoringdata = ttk.LabelFrame(DefinationsEveryting.frame_monitoring, text="Data", padding=(20, 10))
+        DefinationsEveryting.frame_monitoringdata.grid(
+            row=0, column=0, rowspan=6, padx=(20, 10), pady=(20, 10), sticky="nsew"
+        )
         # Scrollbar
-        self.scrollbar = ttk.Scrollbar(self.frame_monitoring)
-        self.scrollbar.pack(side="right", fill="y")
-
-        # Treeview
-        self.treeview = ttk.Treeview(
-            self.frame_monitoring,
+        DefinationsEveryting.scrollbar = ttk.Scrollbar(DefinationsEveryting.frame_monitoringdata)
+        DefinationsEveryting.scrollbar.pack(side="right", fill="y")
+        # Define treeview data
+        DefinationsEveryting.treeview = ttk.Treeview(
+            DefinationsEveryting.frame_monitoringdata,
             selectmode="browse",
-            yscrollcommand=self.scrollbar.set,
-            columns=(1, 2),
+            yscrollcommand=DefinationsEveryting.scrollbar.set,
             height=10,
         )
-        self.treeview.pack(expand=True, fill="both")
-        self.scrollbar.config(command=self.treeview.yview)
-        # Treeview columns
-        self.treeview.column("#0", anchor="w", width=120)
-        self.treeview.column(1, anchor="w", width=120)
-        self.treeview.column(2, anchor="w", width=120)
-        # Treeview Heading
-        self.treeview.heading('#0', text="Speed")
-        self.treeview.heading(1, text="Frequency")
-        self.treeview.heading(2, text="PWM")
 
-        # Define treeview data
-        treeview_data = [
-            ("", 1, "Parent", ("Item 1", "Value 1")),
-            (1, 2, "Child", ("Subitem 1.1", "Value 1.1")),
-            (1, 3, "Child", ("Subitem 1.2", "Value 1.2")),
-            (1, 4, "Child", ("Subitem 1.3", "Value 1.3")),
-            (1, 5, "Child", ("Subitem 1.4", "Value 1.4")),
-            ("", 6, "Parent", ("Item 2", "Value 2")),
-            (6, 7, "Child", ("Subitem 2.1", "Value 2.1")),
-            (6, 8, "Sub-parent", ("Subitem 2.2", "Value 2.2")),
-            (8, 9, "Child", ("Subitem 2.2.1", "Value 2.2.1")),
-            (8, 10, "Child", ("Subitem 2.2.2", "Value 2.2.2")),
-            (8, 11, "Child", ("Subitem 2.2.3", "Value 2.2.3")),
-            (6, 12, "Child", ("Subitem 2.3", "Value 2.3")),
-            (6, 13, "Child", ("Subitem 2.4", "Value 2.4")),
-            ("", 14, "Parent", ("Item 3", "Value 3")),
-            (14, 15, "Child", ("Subitem 3.1", "Value 3.1")),
-            (14, 16, "Child", ("Subitem 3.2", "Value 3.2")),
-            (14, 17, "Child", ("Subitem 3.3", "Value 3.3")),
-            (14, 18, "Child", ("Subitem 3.4", "Value 3.4")),
-            ("", 19, "Parent", ("Item 4", "Value 4")),
-            (19, 20, "Child", ("Subitem 4.1", "Value 4.1")),
-            (19, 21, "Sub-parent", ("Subitem 4.2", "Value 4.2")),
-            (21, 22, "Child", ("Subitem 4.2.1", "Value 4.2.1")),
-            (21, 23, "Child", ("Subitem 4.2.2", "Value 4.2.2")),
-            (21, 24, "Child", ("Subitem 4.2.3", "Value 4.2.3")),
-            (19, 25, "Child", ("Subitem 4.3", "Value 4.3")),
-            ("", 26, "Parent", ("Item 1", "Value 1")),
-            (1, 27, "Child", ("Subitem 1.1", "Value 1.1")),
-            (1, 28, "Child", ("Subitem 1.2", "Value 1.2")),
-            (1, 29, "Child", ("Subitem 1.3", "Value 1.3")),
-            (1, 30, "Child", ("Subitem 1.1", "Value 1.1")),
-            (1, 31, "Child", ("Subitem 1.2", "Value 1.2")),
-            (1, 32, "Child", ("Subitem 1.3", "Value 1.3")),
-        ]
+        GUIAdapter.treeview_usb_data_init()
+        # Create a Frame for the serial connection settings
+        self.frame_nmbr_data = ttk.LabelFrame(DefinationsEveryting.frame_monitoring, text="Total Number of Data", padding=(20, 10))
+        self.frame_nmbr_data.grid(
+            row=6, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew"
+        )
+        # Label
+        DefinationsEveryting.label_count_data = ttk.Label(
+            self.frame_nmbr_data,
+            text="0",
+            justify="center",
+            font=("-size", 9, "-weight", "normal"),
+        )
+        DefinationsEveryting.label_count_data.grid(row=3, column=0, pady=10, columnspan=2)
 
-        # Insert treeview data
-        for item in treeview_data:
-            self.treeview.insert(
-                parent=item[0], index="end", iid=item[1], text=item[2], values=item[3]
-            )
-            if item[0] == "" or item[1] in {8, 21}:
-                self.treeview.item(item[1], open=True)  # Open parents
-
-        # Select and scroll
-        self.treeview.selection_set(10)
-        self.treeview.see(7)
         # ********************** END OF Monitoring CONTENTS ************************
 
         # ****************************** END OF Serial TAB CONTENTS ***************************************
